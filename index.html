@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+<meta charset="UTF-8">
+<title>聊天信息模块设计</title>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.45/vue.global.js"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/element-plus/2.2.28/index.css" rel="stylesheet" />
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/1.2.5/axios.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/element-plus/2.2.28/index.full.js"></script>
+<link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: linear-gradient(100deg, #9397b5, #3d56c5, #99a9bb);
+    }
+
+    .chat-container main {
+      width: calc(100%);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container {
+      background-color: #f4f4f4;
+      width: 1250px;
+      height: 790px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .chat-container main .top-bar {
+      background-color: #ffffff;
+      border-bottom: solid 1px #d6d6d6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0px 20px;
+    }
+
+    @media screen and (max-width: 600px) {
+      body {
+        background: linear-gradient(100deg, #e2e5e8, #dfe1e8, #e1e6ea);
+      }
+
+      .centerit {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+      }
+
+      .chat-container {
+        background-color: #f4f4f4;
+        width: 100%;
+        height: calc(100%);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+      }
+
+      .chat-container main .messages {
+        height: calc(100vh - 160px);
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+      }
+
+      .chat-container main .messages .message {
+        display: flex;
+        margin: 20px;
+        position: relative;
+      }
+
+      .chat-container main .top-bar {
+        background-color: #ffffff;
+        border-bottom: solid 1px #d6d6d6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0px 20px;
+      }
+
+      .chat-container main .bottom-bar .msg-input {
+        width: calc(100% - 10px);
+        margin: 20px;
+        height: 40px;
+        border-radius: 20px;
+        border: 0px;
+        background-color: #ececec;
+        padding: 10px 5px 0px 10px;
+        font-size: 18px;
+      }
+
+      .chat-container main .bottom-bar .send-button svg {
+        fill: white;
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .chat-container main .bottom-bar .send-button {
+        box-sizing: content-box;
+        width: 20px;
+        height: 20px;
+        background-color: #70a0bd;
+        padding: 10px;
+        border-radius: 50%;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+    }
+  </style>
+  <style>
+    .loadingThree {
+      width: 150px;
+      height: 15px;
+      margin: 0 auto;
+    }
+
+    .loadingThree span {
+      display: inline-block;
+      width: 15px;
+      height: 100%;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: lightgreen;
+      -webkit-animation: load 1.04s ease infinite;
+    }
+
+    .loadingThree span:last-child {
+      margin-right: 0px;
+    }
+
+    @-webkit-keyframes load {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .loadingThree span:nth-child(1) {
+      -webkit-animation-delay: 0.13s;
+    }
+
+    .loadingThree span:nth-child(2) {
+      -webkit-animation-delay: 0.26s;
+    }
+
+    .loadingThree span:nth-child(3) {
+      -webkit-animation-delay: 0.39s;
+    }
+
+    .loadingThree span:nth-child(4) {
+      -webkit-animation-delay: 0.52s;
+    }
+
+    .loadingThree span:nth-child(5) {
+      -webkit-animation-delay: 0.65s;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="centerit" id="hello-vue">
+    <div class="chat-container">
+      <main>
+        <div class="top-bar">
+          <div class="user-info">
+            <div class="user-head">
+              <img src="tx.png">
+            </div>
+            <div class="name">智能AI</div>
+            <div class="status online"></div>
+          </div>
+          <div class="buttons">
+          </div>
+        </div>
+        <div class="messages" id="messages" ref="scrollDiv">
+          <div v-for="msg in listMsg">
+            <div class="message" :class="[msg.is_user?'fromme':'']">
+              <div class="user-head">
+                <img :src="msg.avatar">
+              </div>
+              <div class="content">{{ msg.msg }}</div>
+            </div>
+          </div>
+          <div class="message" id="loading" v-show="isShow">
+            <div class="user-head">
+              <img src="tx.png">
+            </div>
+            <div class="content">
+              <div class="loadingThree"><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <!--<div class="date-split">以前或更早以前</div>-->
+          <!--<div class="date-split">今日</div>-->
+        </div>
+        <div class="bottom-bar">
+          <textarea class="msg-input" type="textarea" v-model="prompt" placeholder="输入内容" rows="10"></textarea>
+          <div class="send-button" @click="buttonStatus && submitForm()" :style="buttonColor()">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+              y="0px" viewBox="0 0 512.076 512.076" style="enable-background:new 0 0 512.076 512.076;"
+              xml:space="preserve">
+              <g>
+                <path
+                  d="M509.532,34.999c-2.292-2.233-5.678-2.924-8.658-1.764L5.213,225.734c-2.946,1.144-4.967,3.883-5.192,7.034
+                       c-0.225,3.151,1.386,6.149,4.138,7.7l102.719,57.875l35.651,174.259c0.222,1.232,0.723,2.379,1.442,3.364
+                       c0.072,0.099,0.131,0.175,0.191,0.251c1.256,1.571,3.037,2.668,5.113,3c0.265,0.042,0.531,0.072,0.795,0.088
+                       c0.171,0.011,0.341,0.016,0.511,0.016c1.559,0,3.036-0.445,4.295-1.228c0.426-0.264,0.831-0.569,1.207-0.915
+                       c0.117-0.108,0.219-0.205,0.318-0.306l77.323-77.52c3.186-3.195,3.18-8.369-0.015-11.555c-3.198-3.188-8.368-3.18-11.555,0.015
+                       l-60.739,60.894l13.124-112.394l185.495,101.814c1.868,1.02,3.944,1.239,5.846,0.78c0.209-0.051,0.4-0.105,0.589-0.166
+                       c1.878-0.609,3.526-1.877,4.574-3.697c0.053-0.094,0.1-0.179,0.146-0.264c0.212-0.404,0.382-0.8,0.517-1.202L511.521,43.608
+                       C512.6,40.596,511.824,37.23,509.532,34.999z M27.232,234.712L432.364,77.371l-318.521,206.14L27.232,234.712z M162.72,316.936
+                       c-0.764,0.613-1.429,1.374-1.949,2.267c-0.068,0.117-0.132,0.235-0.194,0.354c-0.496,0.959-0.784,1.972-0.879,2.986L148.365,419.6
+                       l-25.107-122.718l275.105-178.042L162.72,316.936z M359.507,419.195l-177.284-97.307L485.928,66.574L359.507,419.195z" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+<script>
+  const HelloVueApp = {
+    data() {
+      return {
+        key: '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',
+        prompt: '',
+        temperature: 1,
+        top_p: 1,
+        max_tokens: 2048,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        stop: ["Human:", "AI:"],
+        model: 'text-davinci-003',
+        models: ['text-davinci-003', 'text-davinci-002', 'text-curie-001'],
+        response: '',
+        download_disable: true,
+        listMsg: [],
+        isShow: false,
+        buttonStatus: true,
+      }
+    },
+    watch: {
+      response(resp) {
+        if (resp == '') {
+          this.download_disable = true;
+        } else {
+          this.download_disable = false;
+        }
+      },
+      'processData': 'scrollToBottom'
+    },
+    methods: {
+      downloadTxt() {
+        let text = 'Prompt: ' + this.prompt + '\n' + document.getElementById('result').innerText;
+        let element = document.createElement("a");
+        let file = new Blob([text], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = "download.txt";
+        element.click();
+      },
+      buttonColor() {
+        if (this.buttonStatus === false) {
+          return 'background-color: #c8d9e4'
+        }
+        return 'background-color: #0091e9'
+      },
+      // 滚动到下方
+      handleScrollBottom() {
+        this.$nextTick(() => {
+          let scrollElem = this.$refs.scrollDiv;
+          scrollElem.scrollTo({ top: scrollElem.scrollHeight, behavior: 'smooth' });
+        });
+      },
+      sendMsg(newList) {
+        this.listMsg.push(newList);
+        this.handleScrollBottom();
+      },
+      chatGptMsg(text) {
+        let newList = { id: 0, avatar: 'tx.png', msg: text, is_user: 0 };
+        this.sendMsg(newList);
+      },
+
+      submitForm() {
+        this.buttonStatus = false;
+        this.isShow = true;
+        let data = {
+          prompt: this.prompt,
+          temperature: this.temperature,
+          top_p: this.top_p,
+          model: this.model,
+          max_tokens: this.max_tokens,
+          frequency_penalty: this.frequency_penalty,
+          presence_penalty: this.presence_penalty,
+          stop: this.stop
+        }
+        let newList = { id: 1, avatar: '/uploads/20220614/cc1730c63bcb0e98118de16fbcfe48b7.gif', msg: this.prompt, is_user: 1 };
+        this.sendMsg(newList);
+        axios.post('https://api.openai.com/v1/completions', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ` + this.key,
+          }
+        })
+          .then(response => {
+            this.isShow = false;
+            // 这段显示内容
+            this.response = response.data.choices[0].text;
+            this.chatGptMsg(this.response);
+            this.buttonStatus = true;
+
+          })
+          .catch(error => {
+            this.loading = false
+            console.log(error);
+          });
+      }
+    }
+  }
+  Vue.createApp(HelloVueApp).use(ElementPlus).mount('#hello-vue');	
+</script>
+<!--
+错误信息：
+
+{
+  "error": {
+    "message": "The server had an error while processing your request. Sorry about that!",
+    "type": "server_error",
+    "param": null,
+    "code": null
+  }
+}
+
+-->
+</html>
