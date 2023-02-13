@@ -36,129 +36,130 @@ body {
         overflow: hidden;
         display: flex;
     }
+}
 
-    @media screen and (max-width: 600px) {
-        body {
-            background: linear-gradient(100deg, #e2e5e8, #dfe1e8, #e1e6ea);
-        }
-
-        .centerit {
-            position: absolute;
-            top: 0;
-            left: 0;
-            transform: none;
-            width: 100%;
-        }
-
-        .chat-container {
-            background-color: #f4f4f4;
-            width: 100%;
-            height: calc(100%);
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .chat-container main .messages {
-            height: calc(100vh - 160px);
-            display: flex;
-            flex-direction: column;
-            overflow-y: scroll;
-        }
-
-        .chat-container main .messages .message {
-            display: flex;
-            margin: 20px;
-            position: relative;
-        }
-
-        .chat-container main .top-bar {
-            background-color: #ffffff;
-            border-bottom: solid 1px #d6d6d6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0px 20px;
-        }
-
-        .chat-container main .bottom-bar .msg-input {
-            width: calc(100% - 10px);
-            margin: 20px;
-            height: 40px;
-            border-radius: 20px;
-            border: 0px;
-            background-color: #ececec;
-            padding: 10px 5px 0px 10px;
-            font-size: 18px;
-        }
-
-        .chat-container main .bottom-bar .send-button svg {
-            fill: white;
-            position: relative;
-            left: 0px;
-            top: 0px;
-            width: 20px;
-            height: 20px;
-        }
-
-        .chat-container main .bottom-bar .send-button {
-            box-sizing: content-box;
-            width: 20px;
-            height: 20px;
-            background-color: #70a0bd;
-            padding: 10px;
-            border-radius: 50%;
-            margin-right: 20px;
-            cursor: pointer;
-        }
+@media screen and (max-width: 600px) {
+    body {
+        background: linear-gradient(100deg, #e2e5e8, #dfe1e8, #e1e6ea);
     }
 
-    .loadingThree {
-        width: 150px;
-        height: 15px;
-        margin: 0 auto;
+    .centerit {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
     }
 
-    .loadingThree span {
-        display: inline-block;
-        width: 15px;
-        height: 100%;
-        margin-right: 5px;
+    .chat-container {
+        background-color: #f4f4f4;
+        width: 100%;
+        height: calc(100%);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+    }
+
+    .chat-container main .messages {
+        height: calc(100vh - 160px);
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+
+    .chat-container main .messages .message {
+        display: flex;
+        margin: 20px;
+        position: relative;
+    }
+
+    .chat-container main .top-bar {
+        background-color: #ffffff;
+        border-bottom: solid 1px #d6d6d6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0px 20px;
+    }
+
+    .chat-container main .bottom-bar .msg-input {
+        width: calc(100% - 10px);
+        margin: 20px;
+        height: 40px;
+        border-radius: 20px;
+        border: 0px;
+        background-color: #ececec;
+        padding: 10px 5px 0px 10px;
+        font-size: 18px;
+    }
+
+    .chat-container main .bottom-bar .send-button svg {
+        fill: white;
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .chat-container main .bottom-bar .send-button {
+        box-sizing: content-box;
+        width: 20px;
+        height: 20px;
+        background-color: #70a0bd;
+        padding: 10px;
         border-radius: 50%;
-        background: lightgreen;
-        -webkit-animation: load 1.04s ease infinite;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+}
+
+.loadingThree {
+    width: 150px;
+    height: 15px;
+    margin: 0 auto;
+}
+
+.loadingThree span {
+    display: inline-block;
+    width: 15px;
+    height: 100%;
+    margin-right: 5px;
+    border-radius: 50%;
+    background: lightgreen;
+    -webkit-animation: load 1.04s ease infinite;
+}
+
+.loadingThree span:last-child {
+    margin-right: 0px;
+}
+
+@-webkit-keyframes load {
+    0% {
+        opacity: 1;
     }
 
-    .loadingThree span:last-child {
-        margin-right: 0px;
+    100% {
+        opacity: 0;
     }
+}
 
-    @-webkit-keyframes load {
-        0% {
-            opacity: 1;
-        }
+.loadingThree span:nth-child(1) {
+    -webkit-animation-delay: 0.13s;
+}
 
-        100% {
-            opacity: 0;
-        }
-    }
+.loadingThree span:nth-child(2) {
+    -webkit-animation-delay: 0.26s;
+}
 
-    .loadingThree span:nth-child(1) {
-        -webkit-animation-delay: 0.13s;
-    }
+.loadingThree span:nth-child(3) {
+    -webkit-animation-delay: 0.39s;
+}
 
-    .loadingThree span:nth-child(2) {
-        -webkit-animation-delay: 0.26s;
-    }
+.loadingThree span:nth-child(4) {
+    -webkit-animation-delay: 0.52s;
+}
 
-    .loadingThree span:nth-child(3) {
-        -webkit-animation-delay: 0.39s;
-    }
-
-    .loadingThree span:nth-child(4) {
-        -webkit-animation-delay: 0.52s;
-    }
-
-    .loadingThree span:nth-child(5) {
-        -webkit-animation-delay: 0.65s;
-    }
+.loadingThree span:nth-child(5) {
+    -webkit-animation-delay: 0.65s;
+}
